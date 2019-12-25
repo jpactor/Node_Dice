@@ -1,8 +1,8 @@
 class Initiative {
     constructor(channelID) {
         this.initiative = [];
-        this.currentSlotIndex = 0;
-        this.round = 1;
+        this.currentSlotIndex = -1;
+        this.round = 0;
     }
 
     get npc() {
@@ -19,6 +19,10 @@ class Initiative {
 
     get currentRound(){
         return this.round;
+    }
+
+    set currentRound(round){
+        this.round = round;
     }
 
     get unicodeOrder(){
@@ -46,6 +50,9 @@ class Initiative {
     addSlot(type, successes, advantages){
         this.initiative.push({type:type, successes:successes, advantages:advantages});
         this.sort();
+        if (this.currentRound <= 0) {
+            this.currentSlotIndex = -1;
+        }
     }
 
     deleteSlot(type, occurrence){
@@ -55,7 +62,7 @@ class Initiative {
             if (slot.type == type) {
                 occurences++;
                 if (occurences == occurrence){
-                    console.log("Index of " + type, index);
+                    
                     pos = index;
                 }
             }
@@ -90,12 +97,20 @@ class Initiative {
     }
 
     nextSlot(){
+        if (this.currentRound <= 0) {
+            this.beginInitiative();
+        }
         if (this.currentSlotIndex + 1 >= this.initiative.length) {
             this.round += 1;
             this.currentSlotIndex = 0;
         } else {
             this.currentSlotIndex += 1;
         }
+    }
+
+    beginInitiative(){
+        this.currentSlotIndex = 0;
+        this.round = 1;
     }
 }
 
